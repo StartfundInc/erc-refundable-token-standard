@@ -176,11 +176,11 @@ By design ERC-2000 is fully backwards compatible with ERC-20.
 
 ## Test Cases & Implementations
 
-1. [Seller/Buyer Token example](https://github.com/Realtize/erc-refundable-token-standard/blob/main/contracts/examples/ERC20Mockup.sol)
+1. [Seller/Buyer Token example](https://github.com/StartfundInc/erc-refundable-token-standard/blob/main/contracts/examples/ERC20Mockup.sol)
 
-2. [Escrow contract example](https://github.com/Realtize/erc-refundable-token-standard/blob/main/contracts/examples/ErcEscrowAccount.sol)
+2. [Escrow contract example](https://github.com/StartfundInc/erc-refundable-token-standard/blob/main/contracts/examples/ErcEscrowAccount.sol)
 
-3. [Unit test example](https://github.com/Realtize/erc-refundable-token-standard/blob/main/test/escrow-test.js).
+3. [Unit test example](https://github.com/StartfundInc/erc-refundable-token-standard/blob/main/test/escrow-test.js).
 
 ## Copyright
 
