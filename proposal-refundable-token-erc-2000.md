@@ -1,11 +1,13 @@
 ---
+
 eip: 2000
 title: Refundable Token Standard
 author: Jerry <jerry@startfund.io>, David <david@startfund.io>, Demi <demi@startfund.io>
 type: Standards Track
 category: ERC
-status: Working
-created: 2022-01-31
+status: Draft
+created: 2022-08-16
+
 ---
 
 ## Simple Summary
@@ -130,16 +132,16 @@ interface ERC2000 {
 ## Rationale
 The standard proposes interfaces on top of the ERC-20 standard.
 Each functions should include constraint check logic.
-In `escrow-contract`, should implemented internal constraint logic such as period, maximum investors, etc.
-The `buyer-contract` and `seller-contract` should not have constraint rules.
+In escrow-contract, should implemented internal constraint logic such as period, maximum investors, etc.
+The buyer-contract and seller-contract should not have constraint rules.
 
 Let's discuss following functions.
 
-1. **`constructor`**
+1. **constructor**
 
 In escrow contract, will define success/failure conditions. It means constraint rules might not be changed for ever(might be changed after created for market exchange rate.), so it guarantee escrow policy.
 
-2. **`escrowFund`**
+2. **escrowFund**
 
 This function should run differently for buyer and seller.
 
@@ -152,14 +154,14 @@ This function should run differently for buyer and seller.
 - the escrow balance will be (Seller: amount x exchange-rate, Buyer: amount). The `Buyer: amount` will be used for refund process.
 - Once it is success, the seller's escrow balance will be (Seller: -= amount x exchange-rate, Buyer: += amount).
 
-3. **`escrowRefund`**
+3. **escrowRefund**
 
 This function should be invoked by buyers only.
 The buyer can call this function in running state only. In state of failed or success, could not be success.
 The escrow balances of seller and buyer will be updated reverse way of `escrowFund`
 
 
-4. **`escrowWithdraw`**
+4. **escrowWithdraw**
 
 Buyers and seller can withdraw tokens from escrow account to their own account.
 The following processes are recommended.
@@ -174,6 +176,7 @@ The following processes are recommended.
 By design ERC-2000 is fully backwards compatible with ERC-20.
 
 
+
 ## Test Cases & Implementations
 
 1. [Seller/Buyer Token example](https://github.com/StartfundInc/erc-refundable-token-standard/blob/main/contracts/examples/ERC20Mockup.sol)
@@ -182,6 +185,11 @@ By design ERC-2000 is fully backwards compatible with ERC-20.
 
 3. [Unit test example](https://github.com/StartfundInc/erc-refundable-token-standard/blob/main/test/escrow-test.js).
 
+## Security Considerations
+
+Since the external contract(Escrow Contract) will control seller or buyer rights, flaws within the escrow contract directly lead to the standard’s unexpected behavior.
+
+
 ## Copyright
 
-2022 Startfund Inc.
+Copyright and related rights waived via [CC0](https://eips.ethereum.org/LICENSE).
