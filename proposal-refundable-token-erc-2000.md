@@ -79,7 +79,7 @@ interface ERC2000 {
 
     /// @notice simple query to return simple description of compliance.
     /// @dev must implemented in Escrow-Contract and optional for other contracts.
-    function escrowComplainaceDescription() external view returns (string);
+    function escrowComplianceDescription() external view returns (string);
 
     /// simple query to return string based on error code. if code is zero, return can be 'success'
     /// @dev must implemented in Escrow-Contract and optional for other contracts.
