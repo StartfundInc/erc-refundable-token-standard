@@ -23,7 +23,7 @@ The general process would be
 - The issuer funds issuer tokens to the escrow contract.
 - Buyers fund buyer tokens which is pre-defined in escrow contract.
 - When the escrow status meets success, the seller can withdraw buyer tokens and buyers can withdraw seller tokens based on exchange rates.
-- Buyers can withdraw their funded token(or refund)  if the escrow process is failed or in the middle of the escrow process.
+- Buyers can withdraw(or refund) their funded token if the escrow process is failed or in the middle of the escrow process.
 
 ## Specification
 
