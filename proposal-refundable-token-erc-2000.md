@@ -23,11 +23,15 @@ We have suggested this process make possible in on-chain network with a payable 
 
 ## Motivation
 
+---- Delete Now ----
+
 In the token issuing process, the issuer can receive money from buyers(or investors) and transfer issuing tokens to buyers. If the offering process is completed, there is no issue. But buyers can change their plan or the offering does not meet success condition (or be canceled) because of misfitting the compliance rules or other rules. There is no guarantee to pay back (refund) to the buyer in the on-chain network.
 
 
 -- Updated ---
-The escrow service can guarantee to close deal between the seller and buyers. By `ERC5503` standards, smart contract developers can define wide range of rules to make deal success.
+
+
+The escrow service can guarantee to close deal between the seller and buyers. By `ERC5503` standard, smart contract developers can define wide range of rules to make deal successfull.
 
 
 ## Specification
