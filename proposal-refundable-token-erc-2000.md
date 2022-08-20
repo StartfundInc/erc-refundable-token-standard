@@ -1,68 +1,51 @@
 ---
-
-eip: 2000
+eip: 5503
 title: Refundable Token Standard
-author: Jerry <jerry@startfund.io>, David <david@startfund.io>, Demi <demi@startfund.io>
+author: <admin@startfund.io>
+discussions-to: https://ethereum-magicians.org/t/eip-5409-non-fungible-token-extension-for-eip-1155/10240
+status: Draft
 type: Standards Track
 category: ERC
-status: Draft
 created: 2022-08-16
-
 ---
-
-## Simple Summary
-
-A standard interface for Refundable Token.
 
 ## Abstract
 
-The value of security token can be total sum of linked currency’s value. For example, Token Issuing  process, issuer can receive money from  buyers( or investors) and transfers issuing token to buyers. If offering process is successfully completed, there is no issue. But buyers can change their plan, or offering is failed(or canceled) cause of mis-fitting the compliance rules or other rules. There is no way guarantee to payback(refund) to buyer in on-chain network.
-
-We have suggest this process make possible in on-chain network with payable currency like token(ex: USDT)
-
+This standard is an extension of [EIP-20](./eip-20.md). It proposes additional interfaces which allow 2 different tokens to exchange under escrow like contract.
 
 ## Motivation
 
-A standard interface allows payable token contract to interact with ERC-2000 interface within smart contracts.
+The value of a token can be the total sum of the linked currency’s value. For example, in the token issuing process, the issuer can receive money from buyers(or investors) and transfer issuing tokens to buyers. If the offering process is completed, there is no issue. But buyers can change their plan or the offering does not meet success condition (or be canceled) because of misfitting the compliance rules or other rules. There is no guarantee to pay back (refund) to the buyer in the on-chain network.
 
-Any payable token contract call ERC-2000 interface to exchange with issuing token based on constraint built in ERC-2000 smart contract to validate transactions.
-
-Note: Refund is only available in certain conditions(ex: period, oracle value etc) based on implementations.
-
-## Requirements
-
-Exchanging tokens, requires having an escrow like standard way in on-chain network.
-
-The following stand interfaces should be provided on ERC-2000 interface.
-  - MUST support querying texted based compliance for transactions. ex: period, max number of buyers, minimum and maximum tokens to hold, refund period, etc.
-  - exchange(or purchase) with success or failed return code.
-  - refund(or cancel transaction) with success or failed return code.
-  - withdraw when escrow process has been success.
-
+The general process would be
+- The issuer issues tokens.
+- The issuer creates an escrow smart contract with detailed escrow information. The information could include issuer token contract address, buyer token contract address,  lock period, exchange rate, maximum number of buyers, minimum balance of buyer and etc.
+- The issuer funds issuer tokens to the escrow contract.
+- Buyers fund buyer tokens which is pre-defined in escrow contract.
+- When the escrow status meets success, the seller can withdraw buyer tokens and buyers can withdraw seller tokens based on exchange rates.
+- Buyers can withdraw their funded token(or refund)  if the escrow process is failed or in the middle of the escrow process.
 
 ## Specification
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in RFC 2119.
 
 There are 3 contracts for the escrow process: `Buyer Contract`, `Seller Contract` and `Escrow Contract`.
- - Buyer Contract: Buyers will pay to escrow account to exchange with `Seller Token`.
- - Seller Contract: The seller will pay to escrow account to exchange with `Buyer Token`.
- - Escrow Contract: Will be created by seller. Agent to co-operate between buyers and seller based on constraint rules. Instead of simple address mapped balance variable in ERC20 tokens, this balance should have (Seller, Buyer).
+ - Buyer Contract: Buyers will pay to an escrow account to exchange with `Seller Token`.
+ - Seller Contract: The seller will pay to the escrow account to exchange with `Buyer Token`.
+ - Escrow Contract: Will be created by the seller. The contract source code allows users(seller and buyers) based on constraint rules. Instead of a simple address mapped balance variable in ERC20 tokens, the user’s balance should be [Seller Token, Buyer Token].
 
-**Every ERC-2000 compliant contract must implement the `ERC2000` interfaces**
-
+**Every ERC-5503 compliant contract must implement the `ERC5503` interfaces**
 ```solidity
 pragma solidity ^0.4.20;
 
-/// @title ERC-2000 Refundable Token Standard
 
-interface ERC2000 {
+interface ERC5503 {
 
     /// @notice escrow balance of owner
     /// @dev assigned to the zero address are considered invalid, and this
     ///   function throws for queries about the zero address.
     ///   in case of escrow contract,
-    ///       recommend return buyer's token balance.
+    ///       recommend returning the buyer's token balance.
     ///       used for backward compatibility with ERC20 standard.
     /// @param
     ///   - _owner: An address for whom to query the balance
@@ -80,11 +63,11 @@ interface ERC2000 {
 
 
     /// @notice simple query to return simple description of compliance.
-    /// @dev must implemented in Escrow-Contract and optional for other contracts.
+    /// @dev must be implemented in Escrow-Contract and optional for other contracts.
     function escrowComplianceDescription() external view returns (string);
 
     /// simple query to return string based on error code. if code is zero, return can be 'success'
-    /// @dev must implemented in Escrow-Contract and optional for other contracts.
+    /// @dev must be implemented in Escrow-Contract and optional for other contracts.
     function escrowErrorCodeDescription(uint32 _code) external view returns (string);
 
 
@@ -95,8 +78,8 @@ interface ERC2000 {
     ///   - seller can call this function to fund initial supply.
     /// @param
     ///   - to:
-    ///     In case of buyer/seller contract, must be escrow contract address.
-    ///     In case of escrow contract, must be user address who is triggered this transaction.
+    ///     In case of buyer/seller contract, it must be an escrow contract address.
+    ///     In case of escrow contract, it must be the user address who triggered this transaction.
     ///   - _valuePayed: payable token amount
     /// @return reason code. 0 is success, otherwise is failure code.
     function escrowFund(address to, uint256 amount) public returns (uint32);
@@ -106,21 +89,21 @@ interface ERC2000 {
     /// @dev
     ///   - seller/buyer contract should call escrow contract's function before _transfer.
     ///   - escrow contract should update (Seller, Buyer) balance.
-    ///   - seller should not call this function.
+    ///   - the seller should not call this function.
     /// @param
     ///   - to:
-    ///     In case of buyer/seller contract, must be escrow contract address.
-    ///     In case of escrow contract, must be user address who is triggered this transaction.
+    ///     In case of buyer/seller contract, must be an escrow contract address.
+    ///     In case of escrow contract, must be the user address who triggered this transaction.
     ///   - _valuePayed: payable token amount
     /// @return reason code. 0 is success, otherwise is failure code.
     function escrowRefund(address to, uint256 amount) public returns (uint32);
 
     /// @notice withdraw token from escrow account.
     /// @dev
-    ///   - must implemented in Escrow-Contract and optional for other contracts.
-    ///   - buyer is only available when escrow is success, otherwise should call escrowRefund.
-    ///   - in case of escrow failed, seller can refund seller-token.
-    ///   - if escrow is success, seller and buyer can get exchanged token on their own wallet.
+    ///   - must be implemented in Escrow-Contract and optional for other contracts.
+    ///   - buyer is only available when escrow is successful, otherwise should call escrowRefund.
+    ///   - in case the escrow fails, the seller can refund seller-token.
+    ///   - if the escrow is successful, the seller and buyers can get the exchanged tokens on their own wallet.
     /// @return reason code. 0 is success, otherwise is failure code.
     function escrowWithdraw() public returns (uint32);
 
@@ -128,68 +111,60 @@ interface ERC2000 {
 
 
 ```
-
-## Rationale
-The standard proposes interfaces on top of the ERC-20 standard.
-Each functions should include constraint check logic.
-In escrow-contract, should implemented internal constraint logic such as period, maximum investors, etc.
+This standard proposes interfaces on top of the ERC-20 standard.
+Each function should include constraint check logic.
+The escrow-contract  should implement internal constraint logic such as period, maximum investors, etc.
 The buyer-contract and seller-contract should not have constraint rules.
 
-Let's discuss following functions.
+Let's discuss the following functions.
 
 1. **constructor**
 
-In escrow contract, will define success/failure conditions. It means constraint rules might not be changed for ever(might be changed after created for market exchange rate.), so it guarantee escrow policy.
+An escrow contract will define success/failure conditions. It means constraint rules might not be changed forever (might be changed after being created for the market exchange rate.), so it guarantees escrow policy.
 
 2. **escrowFund**
 
-This function should run differently for buyer and seller.
+This function should run differently for buyers and sellers.
 
-[seller]
-- The seller call this function to be escrow-ready. Seller's token ownership(balance) will be transferred to escrow-contract and escrow balance will be (Seller: amount, Buyer: 0).
-- The seller can call this function multiple times depends on implementation, but preferred just one time.
+2.1 [Seller]
+- The seller calls this function to be escrow-ready. Seller's token ownership(balance) will be transferred to escrow-contract and the escrow balance will be (Seller: amount, Buyer: 0).
+- The seller can call this function multiple times depending on implementation, but preferred just one time.
 
-[buyer]
-- When escrow is in running state(not success or failed), the buyer can call this function to deposit fund into escrow account.
-- the escrow balance will be (Seller: amount x exchange-rate, Buyer: amount). The `Buyer: amount` will be used for refund process.
-- Once it is success, the seller's escrow balance will be (Seller: -= amount x exchange-rate, Buyer: += amount).
+2.2 [Buyer]
+- When escrow is running (not successful or failed), the buyer can call this function to deposit funds into the escrow account.
+- The escrow balance will be (Seller: amount x exchange-rate, Buyer: amount). The Buyer: the amount will be used for the refund process.
+- Once it is a success, the seller's escrow balance will be (Seller: -= amount x exchange-rate, Buyer: += amount).
 
 3. **escrowRefund**
 
 This function should be invoked by buyers only.
-The buyer can call this function in running state only. In state of failed or success, could not be success.
+The buyer can call this function in the running state only. In the state of failure or success, could not be a success.
 The escrow balances of seller and buyer will be updated reverse way of `escrowFund`
 
 
 4. **escrowWithdraw**
 
-Buyers and seller can withdraw tokens from escrow account to their own account.
+Buyers and sellers can withdraw tokens from the escrow account to their own account.
 The following processes are recommended.
-- Buyer can withdraw in escrow-success state only. Ownership of seller tokens can be transferred to buyer from escrow-contract. In escrow-failed state, buyer should call `escrowRefund` function.
-- When the seller call this function in escrow-success state, remained seller token will be transferred to seller, and earned buyer's token will be also transferred from escrow-account.
-- In case of escrow-failed, seller only get refund seller token.
-
-
+- Buyer can withdraw in escrow-success state only. Ownership of seller tokens can be transferred to the buyer from escrow-contract. In an escrow-failed state, the buyer should call the `escrowRefund` function.
+- When the seller calls this function in the escrow-success state, the remaining seller token will be transferred to the seller, and the earned buyer's token will be also transferred from escrow-account.
+- In the case of escrow-failed, the seller only gets a refund seller token.
 
 ## Backwards Compatibility
+By design ERC-5503 is fully backward compatible with ERC-20.
 
-By design ERC-2000 is fully backwards compatible with ERC-20.
+## Test Cases
+1. [Seller/Buyer Token example](../assets/eip-5503/ERC20Mockup.sol).
+2. [Escrow contract example](../assets/eip-5503/EscrowContractAccount.sol).
+3. [Unit test example with truffle](../assets/eip-5503/truffule-test.js).
 
-
-
-## Test Cases & Implementations
-
-1. [Seller/Buyer Token example](https://github.com/StartfundInc/erc-refundable-token-standard/blob/main/contracts/examples/ERC20Mockup.sol)
-
-2. [Escrow contract example](https://github.com/StartfundInc/erc-refundable-token-standard/blob/main/contracts/examples/ErcEscrowAccount.sol)
-
-3. [Unit test example](https://github.com/StartfundInc/erc-refundable-token-standard/blob/main/test/escrow-test.js).
+The above 3 files demonstrate the following conditions to exchange seller / buyer tokens.
+- exchange rate is 1:1
+- If the number of buyers reaches 2, the escrow process will be terminated(success).
+- Otherwise(not meet success condition yet), buyers can refund(or withdraw) their funded tokens.
 
 ## Security Considerations
-
 Since the external contract(Escrow Contract) will control seller or buyer rights, flaws within the escrow contract directly lead to the standard’s unexpected behavior.
 
-
 ## Copyright
-
-Copyright and related rights waived via [CC0](https://eips.ethereum.org/LICENSE).
+Copyright and related rights waived via [CC0](../LICENSE.md).
