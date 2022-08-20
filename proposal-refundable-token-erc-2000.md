@@ -23,16 +23,7 @@ We have suggested this process make possible in on-chain network with a payable 
 
 ## Motivation
 
----- Delete Now ----
-
-In the token issuing process, the issuer can receive money from buyers(or investors) and transfer issuing tokens to buyers. If the offering process is completed, there is no issue. But buyers can change their plan or the offering does not meet success condition (or be canceled) because of misfitting the compliance rules or other rules. There is no guarantee to pay back (refund) to the buyer in the on-chain network.
-
-
--- Updated ---
-
-
-The escrow service can guarantee to close deal between the seller and buyers. By `ERC5503` standard, smart contract developers can define wide range of rules to make deal successfull.
-
+The escrow service can guarantee to close deal between the seller and buyers.  By `ERC5503` standard, smart contract developers can define a wide range of rules to make the deals more successful.
 
 ## Specification
 
@@ -144,13 +135,13 @@ An escrow contract will define success/failure conditions. It means constraint r
 This function should run differently for buyers and sellers.
 
 2.1 [Seller]
-- The seller calls this function to be escrow-ready. Seller's token ownership(balance) will be transferred to escrow-contract and the escrow balance will be (Seller: amount, Buyer: 0).
+- The seller calls this function to be escrow-ready. Seller's token ownership(balance) will be transferred to escrow-contract and the escrow balance should be `(Seller: amount, Buyer: 0)`.
 - The seller can call this function multiple times depending on implementation, but preferred just one time.
 
 2.2 [Buyer]
 - When escrow is running (not successful or failed), the buyer can call this function to deposit funds into the escrow account.
-- The escrow balance will be (Seller: amount x exchange-rate, Buyer: amount). The Buyer: the amount will be used for the refund process.
-- Once it is a success, the seller's escrow balance will be (Seller: -= amount x exchange-rate, Buyer: += amount).
+- The escrow balance should be  `(Seller: amount X exchange-rate, Buyer: amount)`. The Buyer: the amount will be used for the refund process.
+- In a successful scenario, the seller's escrow balance should be `(Seller: -= amount x exchange-rate, Buyer: += amount)`.
 
 3. **escrowRefund**
 
