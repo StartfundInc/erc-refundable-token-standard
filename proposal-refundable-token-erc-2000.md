@@ -19,11 +19,15 @@ This standard is an extension of [EIP-20](./eip-20.md). This specification provi
 - When the escrow status meets success, the seller can withdraw buyer tokens and buyers can withdraw seller tokens based on exchange rates.
 - Buyers can withdraw(or refund) their funded token if the escrow process is failed or in the middle of the escrow process.
 
+We have suggested this process make possible in on-chain network with a payable currency like token(ex: USDT)
 
 ## Motivation
 
 In the token issuing process, the issuer can receive money from buyers(or investors) and transfer issuing tokens to buyers. If the offering process is completed, there is no issue. But buyers can change their plan or the offering does not meet success condition (or be canceled) because of misfitting the compliance rules or other rules. There is no guarantee to pay back (refund) to the buyer in the on-chain network.
 
+
+-- Updated ---
+The escrow service can guarantee to close deal between the seller and buyers. By `ERC5503` standards, smart contract developers can define wide range of rules to make deal success.
 
 
 ## Specification
@@ -116,7 +120,13 @@ interface ERC5503 {
 
 This standard proposes interfaces on top of the ERC-20 standard.
 Each function should include constraint check logic.
-The escrow-contract  should implement internal constraint logic such as period, maximum investors, etc.
+The escrow-contract should implement internal constraint logic such as
+ - Lock period
+ - Maximum(or minimum) number of investors
+ - Maximum(or minimum) number of tokens to fund
+ - Exchange rates of seller/buyer token
+ - KYC verification of users(It might require additional interface)
+ - etc
 The buyer-contract and seller-contract should not have constraint rules.
 
 Let's discuss the following functions.
