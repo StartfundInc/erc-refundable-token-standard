@@ -11,7 +11,7 @@ created: 2022-08-16
 
 ## Abstract
 
-This standard is an extension of [EIP-20](./eip-20.md). It proposes additional interfaces which allow 2 different tokens to exchange under escrow like contract.
+This standard is an extension of [EIP-20](./eip-20.md). It proposes additional interfaces which allow 2 different tokens to exchange under control of escrow like contract.
 
 ## Motivation
 
@@ -44,12 +44,11 @@ interface ERC5503 {
     /// @notice escrow balance of owner
     /// @dev assigned to the zero address are considered invalid, and this
     ///   function throws for queries about the zero address.
-    ///   in case of escrow contract,
-    ///       recommend returning the buyer's token balance.
-    ///       used for backward compatibility with ERC20 standard.
     /// @param
     ///   - _owner: An address for whom to query the balance
-    /// @return amount of current escrow account balance. can be seller's token or buyer's token
+    /// @return amount of current escrow account balance.
+    ///   - in case of escrow contract, it can be seller's token or buyer's token for backward compatibility with ERC20 standard.
+    ///   - in case of seller/buyer contract, same as other ERC20 standard.
     function balanceOf(address account) public view returns (uint256);
 
 
@@ -111,6 +110,9 @@ interface ERC5503 {
 
 
 ```
+
+## Rationale
+
 This standard proposes interfaces on top of the ERC-20 standard.
 Each function should include constraint check logic.
 The escrow-contract  should implement internal constraint logic such as period, maximum investors, etc.
