@@ -27,8 +27,6 @@ The escrow service can guarantee to close deal between the seller and buyers.  B
 
 ## Specification
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in RFC 2119.
-
 There are 3 contracts for the escrow process: `Buyer Contract`, `Seller Contract` and `Escrow Contract`.
  - Buyer Contract: Buyers will pay to an escrow account to exchange with `Seller Token`.
  - Seller Contract: The seller will pay to the escrow account to exchange with `Buyer Token`.
@@ -141,7 +139,7 @@ This function should run differently for buyers and sellers.
 2.2 [Buyer]
 - When escrow is running (not successful or failed), the buyer can call this function to deposit funds into the escrow account.
 - The escrow balance should be  `(Seller: amount X exchange-rate, Buyer: amount)`. The Buyer: the amount will be used for the refund process.
-- In a successful scenario, the seller's escrow balance should be `(Seller: -= amount x exchange-rate, Buyer: += amount)`.
+- In a successful scenario, the seller's escrow balance should be `(Seller: -= amount X exchange-rate, Buyer: += amount)`.
 
 3. **escrowRefund**
 
