@@ -137,7 +137,7 @@ This function should run differently for buyers and sellers.
 - The seller can call this function multiple times depending on implementation, but preferred just one time.
 
 2.2 [Buyer]
-- When escrow is running (not successful or failed), the buyer can call this function to deposit funds into the escrow account.
+- When the escrow is running, the buyer should be able to call this function to deposit funds into the escrow account.
 - The escrow balance should be  `(Seller: amount X exchange-rate, Buyer: amount)`. The Buyer: the amount will be used for the refund process.
 - In a successful scenario, the seller's escrow balance should be `(Seller: -= amount X exchange-rate, Buyer: += amount)`.
 
