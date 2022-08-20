@@ -15,7 +15,7 @@ This standard is an extension of [EIP-20](./eip-20.md). It proposes additional i
 
 ## Motivation
 
-The value of a token can be the total sum of the linked currency’s value. For example, in the token issuing process, the issuer can receive money from buyers(or investors) and transfer issuing tokens to buyers. If the offering process is completed, there is no issue. But buyers can change their plan or the offering does not meet success condition (or be canceled) because of misfitting the compliance rules or other rules. There is no guarantee to pay back (refund) to the buyer in the on-chain network.
+In the token issuing process, the issuer can receive money from buyers(or investors) and transfer issuing tokens to buyers. If the offering process is completed, there is no issue. But buyers can change their plan or the offering does not meet success condition (or be canceled) because of misfitting the compliance rules or other rules. There is no guarantee to pay back (refund) to the buyer in the on-chain network.
 
 The general process would be
 - The issuer issues tokens.
