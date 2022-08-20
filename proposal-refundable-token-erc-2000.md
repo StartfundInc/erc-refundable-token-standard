@@ -11,19 +11,20 @@ created: 2022-08-16
 
 ## Abstract
 
-This standard is an extension of [EIP-20](./eip-20.md). It proposes additional interfaces which allow 2 different tokens to exchange under control of escrow like contract.
-
-## Motivation
-
-In the token issuing process, the issuer can receive money from buyers(or investors) and transfer issuing tokens to buyers. If the offering process is completed, there is no issue. But buyers can change their plan or the offering does not meet success condition (or be canceled) because of misfitting the compliance rules or other rules. There is no guarantee to pay back (refund) to the buyer in the on-chain network.
-
-The general process would be
+This standard is an extension of [EIP-20](./eip-20.md). This specification provides a type of escrow service in the block chain ecosystem, which includes the following capabilities.
 - The issuer issues tokens.
 - The issuer creates an escrow smart contract with detailed escrow information. The information could include issuer token contract address, buyer token contract address,  lock period, exchange rate, maximum number of buyers, minimum balance of buyer and etc.
 - The issuer funds issuer tokens to the escrow contract.
 - Buyers fund buyer tokens which is pre-defined in escrow contract.
 - When the escrow status meets success, the seller can withdraw buyer tokens and buyers can withdraw seller tokens based on exchange rates.
 - Buyers can withdraw(or refund) their funded token if the escrow process is failed or in the middle of the escrow process.
+
+
+## Motivation
+
+In the token issuing process, the issuer can receive money from buyers(or investors) and transfer issuing tokens to buyers. If the offering process is completed, there is no issue. But buyers can change their plan or the offering does not meet success condition (or be canceled) because of misfitting the compliance rules or other rules. There is no guarantee to pay back (refund) to the buyer in the on-chain network.
+
+
 
 ## Specification
 
