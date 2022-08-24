@@ -2,7 +2,7 @@
 eip: 5503
 title: Refundable Token Standard
 author: <admin@startfund.io>
-discussions-to: https://ethereum-magicians.org/t/eip-5409-non-fungible-token-extension-for-eip-1155/10240
+discussions-to: https://ethereum-magicians.org/t/eip-5503-refundable-token-standard/10494
 status: Draft
 type: Standards Track
 category: ERC
@@ -19,11 +19,11 @@ This standard is an extension of [EIP-20](./eip-20.md). This specification provi
 - When the escrow status meets success, the seller can withdraw buyer tokens and buyers can withdraw seller tokens based on exchange rates.
 - Buyers can withdraw(or refund) their funded token if the escrow process is failed or in the middle of the escrow process.
 
-We have suggested this process make possible in on-chain network with a payable currency like token(ex: USDT)
+We have suggested this process be possible in an on-chain network with a payable currency like token(ex: USDT).
 
 ## Motivation
 
-The escrow service can guarantee to close deal between the seller and buyers.  By `ERC5503` standard, smart contract developers can define a wide range of rules to make the deals more successful.
+Escrow service holds money until a particular condition has been met for seller and buyer.  By `ERC5503` standard, smart contract developers can define a wide range of rules to make the deals more successful.
 
 ## Specification
 
@@ -106,7 +106,6 @@ interface ERC5503 {
 
 }
 
-
 ```
 
 ## Rationale
@@ -120,6 +119,7 @@ The escrow-contract should implement internal constraint logic such as
  - Exchange rates of seller/buyer token
  - KYC verification of users(It might require additional interface)
  - etc
+
 The buyer-contract and seller-contract should not have constraint rules.
 
 Let's discuss the following functions.
@@ -165,7 +165,7 @@ By design ERC-5503 is fully backward compatible with ERC-20.
 3. [Unit test example with truffle](../assets/eip-5503/truffule-test.js).
 
 The above 3 files demonstrate the following conditions to exchange seller / buyer tokens.
-- exchange rate is 1:1
+- exchange rate is one to one.
 - If the number of buyers reaches 2, the escrow process will be terminated(success).
 - Otherwise(not meet success condition yet), buyers can refund(or withdraw) their funded tokens.
 
