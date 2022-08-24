@@ -1,7 +1,7 @@
 ---
 eip: 5503
 title: Refundable Token Standard
-author: <admin@startfund.io>
+author: StartfundInc (@StartfundInc)
 discussions-to: https://ethereum-magicians.org/t/eip-5503-refundable-token-standard/10494
 status: Draft
 type: Standards Track
