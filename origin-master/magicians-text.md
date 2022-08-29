@@ -1,13 +1,4 @@
----
-eip: 5528
-title: Refundable Token Standard
-author: StartfundInc (@StartfundInc)
-discussions-to: https://ethereum-magicians.org/t/eip-5528-refundable-token-standard/10494
-status: Draft
-type: Standards Track
-category: ERC
-created: 2022-08-16
----
+pull request: [https://github.com/ethereum/EIPs/pull/5528](https://github.com/ethereum/EIPs/pull/5528)
 
 ## Abstract
 
@@ -159,18 +150,5 @@ The following processes are recommended.
 ## Backward Compatibility
 By design, ERC-5528 is fully backward compatible with ERC-20.
 
-## Test Cases
-1. [Seller/Buyer Token example](../assets/eip-5528/ERC20Mockup.sol).
-2. [Escrow contract example](../assets/eip-5528/EscrowContractAccount.sol).
-3. [Unit test example with truffle](../assets/eip-5528/truffule-test.js).
-
-The above 3 files demonstrate the following conditions for exchanging seller/buyer tokens.
-- The exchange rate is one to one.
-- If the number of buyers reaches 2, the escrow process will be terminated(success).
-- Otherwise(not meet success condition yet), buyers can refund(or withdraw) their funded tokens.
-
 ## Security Considerations
 Since the external contract(Escrow Contract) will control seller or buyer rights, flaws within the escrow contract directly lead to the standard’s unexpected behavior.
-
-## Copyright
-Copyright and related rights waived via [CC0](../LICENSE.md).

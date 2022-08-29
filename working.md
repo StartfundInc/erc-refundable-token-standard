@@ -1,54 +1,43 @@
 ---
 eip: 5528
-title: Refundable Token Standard
+title: Refundable Fungible Tokens
+description: Allows refunds for EIP-20 tokens for a period of time
 author: StartfundInc (@StartfundInc)
 discussions-to: https://ethereum-magicians.org/t/eip-5528-refundable-token-standard/10494
 status: Draft
 type: Standards Track
 category: ERC
 created: 2022-08-16
+requires: 20
 ---
 
 ## Abstract
 
 This standard is an extension of [EIP-20](./eip-20.md). This specification provides a type of escrow service in the blockchain ecosystem, which includes the following capabilities.
 - The issuer issues tokens.
-- The issuer creates an escrow smart contract with detailed escrow information. The information could include issuer token contract address, buyer token contract address,  lock period, exchange rate, the maximum number of buyers, minimum balance of buyers and, etc.
+- The issuer creates an escrow smart contract with detailed escrow information. The information could include issuer token contract address, buyer token contract address,  lock period, exchange rate, the maximum number of buyers, minimum balance of buyers, etc.
 - The issuer funds issuer tokens to the escrow contract.
 - Buyers fund buyer tokens which are pre-defined in the escrow contract.
 - When the escrow status meets success, the seller can withdraw buyer tokens and buyers can withdraw seller tokens based on exchange rates.
 - Buyers can withdraw(or refund) their funded token if the escrow process is failed or is in the middle of the escrow process.
 
-We have suggested this process be possible in an on-chain network with a payable currency-like token(ex: USDT).
-
 ## Motivation
 
-Escrow service holds the money until a particular condition has been met for the seller and buyer.  By `ERC5528` standard, smart contract developers can define a wide range of rules to make the deals more successful.
+Escrow service holds the money until a particular condition has been met for the seller and buyer.  By the `ERC5528` standard, smart contract developers can define a wide range of rules to make the deals more successful.
 
 ## Specification
 
 There are 3 contracts for the escrow process: `Buyer Contract`, `Seller Contract`, and `Escrow Contract`.
  - Buyer Contract: Buyers will pay to an escrow account to exchange with `Seller Token`.
  - Seller Contract: The seller will pay to the escrow account to exchange with `Buyer Token`.
- - Escrow Contract: Will be created by the seller. The contract source code allows users(seller and buyers) based on constraint rules. Instead of a simple address mapped balance variable in ERC20 tokens, the user’s balance should be [Seller Token, Buyer Token].
+ - Escrow Contract: Will be created by the seller. The contract source code allows users(a seller and buyers) based on constraint rules. Instead of a simple address mapped balance variable in [EIP-20](./eip-20.md) tokens, the user’s balance should be [Seller Token, Buyer Token].
 
-**Every ERC-5528 compliant contract must implement the `ERC5528` interfaces**
+
 ```solidity
 pragma solidity ^0.4.20;
 
 
-interface ERC5528 {
-
-    /// @notice escrow balance of owner
-    /// @dev assigned to the zero address is considered invalid, and this
-    ///   function throws for queries about the zero address.
-    /// @param
-    ///   - _owner: An address for whom to query the balance
-    /// @return amount of current escrow account balance.
-    ///   - in case of an escrow contract, it can be the seller's token or buyer's token for backward compatibility with the ERC20 standard.
-    ///   - in case of seller/buyer contract, same as other ERC20 standards.
-    function balanceOf(address account) public view returns (uint256);
-
+interface ERC5528 is ERC20 {
 
     /// @notice escrow balance of owner
     /// @dev assigned to the zero address is considered invalid, and this
@@ -72,11 +61,11 @@ interface ERC5528 {
     /// @dev
     ///   - seller/buyer contract should call escrow contract's function before _transfer.
     ///   - escrow contract should update (Seller, Buyer) balance.
-    ///   - the seller can call this function to fund initial supply.
+    ///   - the seller can call this function to fund the initial supply.
     /// @param
     ///   - to:
-    ///     In case of a buyer/seller contract, it must be an escrow contract address.
-    ///     In case of an escrow contract, it must be the user address that triggered this transaction.
+    ///     In the case of a buyer/seller contract, it must be an escrow contract address.
+    ///     In the case of an escrow contract, it must be the user address that triggered this transaction.
     ///   - _valuePayed: payable token amount
     /// @return reason code. 0 is a success, otherwise is failure code.
     function escrowFund(address to, uint256 amount) public returns (uint32);
@@ -106,11 +95,12 @@ interface ERC5528 {
 
 }
 
+
 ```
 
 ## Rationale
 
-This standard proposes interfaces on top of the ERC-20 standard.
+This standard proposes interfaces on top of the [EIP-20](./eip-20.md) standard.
 Each function should include constraint check logic.
 The escrow-contract should implement internal constraint logic such as
  - Lock period
@@ -156,10 +146,13 @@ The following processes are recommended.
 - When the seller calls this function in the escrow-success state, the remaining seller token will be transferred to the seller, and the earned buyer's token will be also transferred from the escrow-account.
 - In the case of escrow-failed, the seller only gets a refund seller token.
 
-## Backward Compatibility
-By design, ERC-5528 is fully backward compatible with ERC-20.
+## Backwards Compatibility
+
+This EIP is fully backward compatible with the [EIP-20](./eip-20.md) specification.
+
 
 ## Test Cases
+
 1. [Seller/Buyer Token example](../assets/eip-5528/ERC20Mockup.sol).
 2. [Escrow contract example](../assets/eip-5528/EscrowContractAccount.sol).
 3. [Unit test example with truffle](../assets/eip-5528/truffule-test.js).
@@ -170,7 +163,9 @@ The above 3 files demonstrate the following conditions for exchanging seller/buy
 - Otherwise(not meet success condition yet), buyers can refund(or withdraw) their funded tokens.
 
 ## Security Considerations
+
 Since the external contract(Escrow Contract) will control seller or buyer rights, flaws within the escrow contract directly lead to the standard’s unexpected behavior.
 
 ## Copyright
+
 Copyright and related rights waived via [CC0](../LICENSE.md).
