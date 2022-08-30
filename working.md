@@ -72,11 +72,11 @@ The `Escrow Contract` may defines followings:
 
 This function should run differently for buyers and sellers.
 
-2.1 [Seller]
+##### escrowFund (for seller token)
 - The seller calls this function to be escrow-ready. The seller's token ownership(balance) will be transferred to the escrow contract and the escrow balance should be `(Seller: amount, Buyer: 0)`.
 - The seller can call this function multiple times depending on implementation, but preferred just one time.
 
-2.2 [Buyer]
+##### escrowFund (for buyer token)
 - During the escrow process, the buyer should be able to call this function to deposit funds into the escrow account.
 - The escrow balance should be  `(Seller: amount X exchange rate, Buyer: amount)`. The Buyer: the amount will be used for the refund process.
 - In a successful scenario, the seller's escrow balance should be `(Seller: -= amount X exchange rate, Buyer: += amount)`.
@@ -96,6 +96,8 @@ The following processes are recommended.
 - When the seller calls this function in the escrow-success state, the remaining seller token will be transferred to the seller, and the earned buyer's token will be also transferred from the escrow-account.
 - In the case of escrow-failed, the seller only gets a refund seller token.
 
+
+### Example of interface
 
 ```solidity
 pragma solidity ^0.4.20;
