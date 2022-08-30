@@ -23,14 +23,77 @@ This standard is an extension of [EIP-20](./eip-20.md). This specification provi
 
 ## Motivation
 
+[TBD]: Should cover escrow & refundable
+- Why escrow is requires
+- Why refundable is requires
+
+
+[OLD ONE]
 Escrow service holds the money until a particular condition has been met for the seller and buyer.  By the `ERC5528` standard, smart contract developers can define a wide range of rules to make the deals more successful.
+
+[example of 3135]
+There are two main purposes of this EIP, one is to reduce interactions with blockchain, the second is to link Ethereum to real-world payment problems.
+
+Many small businesses want to build payment system based on blockchain but find it difficult. There are basically two ways:
+
+1. Directly pay with token. There are many wallet can receive and transfer token but transactions on Ethereum cost gas and take time to confirm.
+2. User lock token on payment smart contract and service provider use payment messages signed by user to release token, establishing a micropayment channel. The advantage is interactions with blockchain is reduced and the signing/verifying process is off-chain. But interact with payment contract needs service provider to build a DApp, which require resources many small businesses do not have. Even if they managed to build DApps, they are all different, not standardized. Also, user should have a wallet with DApp browser and has to learn how to use it.
+
+This EIP helps to standardize the interactions of micropayment system, and make it possible for wallet build a universal UI in the future.
+
 
 ## Specification
 
+
 There are 3 contracts for the escrow process: `Buyer Contract`, `Seller Contract`, and `Escrow Contract`.
- - Buyer Contract: Buyers will pay to an escrow account to exchange with `Seller Token`.
- - Seller Contract: The seller will pay to the escrow account to exchange with `Buyer Token`.
- - Escrow Contract: Will be created by the seller. The contract source code allows users(a seller and buyers) based on constraint rules. Instead of a simple address mapped balance variable in [EIP-20](./eip-20.md) tokens, the user’s balance should be [Seller Token, Buyer Token].
+- Escrow Contract: Will be created by the seller. This contract should define the escrow policy and holds seller' tokens and buyer' tokens
+- Buyer Contract: The buyer will pay buyer-tokens to the escrow contract to exchange with seller-tokens.
+- Seller Contract: The seller will pay seller-tokens to the escrow contract to exchange with buyer-tokens.
+
+
+This standard proposes interfaces on top of the [EIP-20](./eip-20.md) standard.
+Each function should include constraint check logic.
+The escrow-contract should implement internal constraint logic such as
+ - Lock period
+ - Maximum (or minimum) number of investors
+ - Maximum (or minimum) number of tokens to fund
+ - Exchange rates of seller/buyer token
+ - KYC verification of users
+
+
+### Methods
+
+**NOTES**:
+  - The following specifications use syntax from Solidity `0.4.17` (or above)
+
+#### decimals
+
+Returns the number of decimals the token uses - e.g. `8`, means to divide the token amount by `100000000` to get its user representation.
+
+OPTIONAL - This method can be used to improve usability,
+but interfaces and other contracts MUST NOT expect these values to be present.
+
+```
+function decimals() public view returns (uint8)
+```
+
+#### balanceOf
+
+Returns the account balance of another account with address `_owner`.
+
+```
+function balanceOf(address _owner) public view returns (uint256 balance)
+```
+
+
+#### escrowBalanceOf
+
+Returns
+
+```
+function escrowBalanceOf(address account) public view returns (uint256, uint256);
+```
+
 
 
 ```solidity
@@ -45,7 +108,7 @@ interface ERC5528 is ERC20 {
     /// @param
     ///   - _owner: An address for whom to query the balance
     /// @return amount of current escrow account balance. First is buyer token , and seconds is seller token
-    function escrowBalanceOf(address account) public view returns (uint256, uint256);
+
 
 
     /// @notice simple query to return a simple description of compliance.
@@ -95,20 +158,23 @@ interface ERC5528 is ERC20 {
 
 }
 
-
 ```
 
 ## Rationale
 
-This standard proposes interfaces on top of the [EIP-20](./eip-20.md) standard.
-Each function should include constraint check logic.
-The escrow-contract should implement internal constraint logic such as
- - Lock period
- - Maximum(or minimum) number of investors
- - Maximum(or minimum) number of tokens to fund
- - Exchange rates of seller/buyer token
- - KYC verification of users(It might require additional interface)
- - etc
+[TBD]
+
+[examle of 3135]
+This EIP targets on ERC-20 tokens due to its widespread adoption. However, this extension is designed to be compatible with other token standard.
+
+The reason we chose to implement those functions in token contract rather than a separate record contract is as follows:
+- Token can transfer is more convenient and more general than interact with DApp
+- Token is more standardized and has better UI support
+- Token is equal to service, make token economy more prosperous
+
+
+----
+
 
 The buyer-contract and seller-contract should not have constraint rules.
 
