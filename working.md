@@ -18,13 +18,15 @@ This standard is an extension of [EIP-20](./eip-20.md). This specification provi
 - The seller creates an escrow smart contract with detailed escrow information. The information could include seller token contract address, buyer token contract address,  lock period, exchange rate, the maximum number of buyers, minimum balance of buyers, etc.
 - The seller funds seller tokens to the escrow contract.
 - Buyers fund buyer tokens which are pre-defined in the escrow contract.
-- When the escrow status meets success, the seller can withdraw buyer tokens and buyers can withdraw seller tokens based on exchange rates.
+- When the escrow status meets success, the seller can withdraw buyer tokens, and buyers can withdraw seller tokens based on exchange rates.
 - Buyers can withdraw(or refund) their funded token if the escrow process is failed or is in the middle of the escrow process.
 
 ## Motivation
 
 Due to the nature of cryptocurrencies that guarantee anonymity, there is no way to get it back to the cryptocurrency that has already been paid.
-To solve this problem, the Escrow service exists in the real world.  However, it is difficult to implement an escrow service coordinated by a third-party arbitrator in a decentralized cryptocurrency ecosystem.  To solve this, we designed a smart contract that acts as an escrow and devised a function where each token is sent back to the original wallet if the escrow is not completed. Escrow smart contract service holds the `ERC20` tokens until a particular condition has been met for the seller and buyers. By the `ERC5528` standard, smart contract developers can define a wide range of rules to make the deals more successful.
+To solve this problem, the Escrow service exists in the real world. However, it is challenging to implement an escrow service coordinated by a third-party arbitrator in a decentralized cryptocurrency ecosystem.  To solve this, we designed a smart contract that acts as an escrow and devised a function where each token is sent back to the original wallet if the escrow is not completed.
+
+Escrow smart contract service should support refund `ERC20` tokens in the middle of the escrow process or when the operation fails.
 
 
 ## Specification
@@ -108,7 +110,7 @@ interface ERC5528 is ERC20 {
 
 ## Rationale
 
-The interfaces described in this ERC have been chosen to cover the escrow refundable issue.
+The interfaces described in this ERC have been chosen to cover the refundable issue in the escrow operation.
 
 The suggested 3 functions (`escrowFund`, `escrowRefund` and `escrowWithdraw`) are based on `transfer` function in `ERC20`.
 
@@ -116,7 +118,7 @@ The suggested 3 functions (`escrowFund`, `escrowRefund` and `escrowWithdraw`) ar
 
 `escrowRefund` can be invoked in the middle of the escrow process or when the escrow process is failed.
 
-`escrowWithdraw` allows users (sellers and buyers) to transfer tokens from the escrow account. When the escrow process is completed, , the seller can get the buyer's token and the buyers can get the seller's token.
+`escrowWithdraw` allows users (sellers and buyers) to transfer tokens from the escrow account. When the escrow process is completed, the seller can get the buyer's token and the buyers can get the seller's token.
 
 ## Backwards Compatibility
 
@@ -128,7 +130,7 @@ This EIP is fully backward compatible with the [EIP-20](./eip-20.md) specificati
 2. [Escrow contract example](../assets/eip-5528/EscrowContractAccount.sol).
 3. [Unit test example with truffle](../assets/eip-5528/truffule-test.js).
 
-The above 3 files demonstrate the following conditions for exchanging seller/buyer tokens.
+The above three files demonstrate the following conditions for exchanging seller/buyer tokens.
 - The exchange rate is one-to-one.
 - If the number of buyers reaches 2, the escrow process will be terminated(success).
 - Otherwise(not meeting success condition yet), buyers can refund(or withdraw) their funded tokens.
