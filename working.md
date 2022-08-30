@@ -52,99 +52,54 @@ There are 3 contracts for the escrow process: `Buyer Contract`, `Seller Contract
 
 
 This standard proposes interfaces on top of the [EIP-20](./eip-20.md) standard.
-Each function should include constraint check logic.
-The escrow-contract should implement internal constraint logic such as
- - Lock period
- - Maximum (or minimum) number of investors
- - Maximum (or minimum) number of tokens to fund
- - Exchange rates of seller/buyer token
- - KYC verification of users
-
 
 ### Methods
 
 **NOTES**:
   - The following specifications use syntax from Solidity `0.4.17` (or above)
 
-#### decimals
+#### constructor
+The `Escrow Contract` may defines followings:
+- MUST include seller token contract address
+- MUST include buyer token contract address
+- Lock period
+- Maximum (or minimum) number of investors
+- Maximum (or minimum) number of tokens to fund
+- Exchange rates of seller/buyer token
+- KYC verification of users
 
-Returns the number of decimals the token uses - e.g. `8`, means to divide the token amount by `100000000` to get its user representation.
+#### escrowFund
 
-OPTIONAL - This method can be used to improve usability,
-but interfaces and other contracts MUST NOT expect these values to be present.
+This function should run differently for buyers and sellers.
 
-```
-function decimals() public view returns (uint8)
-```
+2.1 [Seller]
+- The seller calls this function to be escrow-ready. The seller's token ownership(balance) will be transferred to the escrow contract and the escrow balance should be `(Seller: amount, Buyer: 0)`.
+- The seller can call this function multiple times depending on implementation, but preferred just one time.
 
-#### balanceOf
+2.2 [Buyer]
+- During the escrow process, the buyer should be able to call this function to deposit funds into the escrow account.
+- The escrow balance should be  `(Seller: amount X exchange rate, Buyer: amount)`. The Buyer: the amount will be used for the refund process.
+- In a successful scenario, the seller's escrow balance should be `(Seller: -= amount X exchange rate, Buyer: += amount)`.
 
-Returns the account balance of another account with address `_owner`.
+#### escrowRefund
 
-```
-function balanceOf(address _owner) public view returns (uint256 balance)
-```
-
-#### transfer
-
-Transfers `_value` amount of tokens to address `_to`, and MUST fire the `Transfer` event.
-The function SHOULD `throw` if the message caller's account balance does not have enough tokens to spend.
-
-*Note* Transfers of 0 values MUST be treated as normal transfers and fire the `Transfer` event.
-
-``` js
-function transfer(address _to, uint256 _value) public returns (bool success)
-```
-
+This function should be invoked by buyers only.
+The buyer can call this function in the running state only. In the state of failure or success, could not be a success.
+The escrow balances of seller and buyer will be updated reverse way of `escrowFund`
 
 
-#### transferFrom
+#### escrowWithdraw
 
-Transfers `_value` amount of tokens from address `_from` to address `_to`, and MUST fire the `Transfer` event.
-
-The `transferFrom` method is used for a withdraw workflow, allowing contracts to transfer tokens on your behalf.
-This can be used for example to allow a contract to transfer tokens on your behalf and/or to charge fees in sub-currencies.
-The function SHOULD `throw` unless the `_from` account has deliberately authorized the sender of the message via some mechanism.
-
-*Note* Transfers of 0 values MUST be treated as normal transfers and fire the `Transfer` event.
-
-``` js
-function transferFrom(address _from, address _to, uint256 _value) public returns (bool success)
-```
-
-
-#### escrowBalanceOf
-
-Returns
-
-```
-function escrowBalanceOf(address account) public view returns (uint256, uint256);
-```
-
+Buyers and sellers can withdraw tokens from the escrow account to their account.
+The following processes are recommended.
+- Buyer can withdraw in escrow-success state only. Ownership of seller tokens can be transferred to the buyer from escrow-contract. In an escrow-failed state, the buyer should call the `escrowRefund` function.
+- When the seller calls this function in the escrow-success state, the remaining seller token will be transferred to the seller, and the earned buyer's token will be also transferred from the escrow-account.
+- In the case of escrow-failed, the seller only gets a refund seller token.
 
 
 ```solidity
 pragma solidity ^0.4.20;
 
-
-interface ERC5528 is ERC20 {
-
-    /// @notice escrow balance of owner
-    /// @dev assigned to the zero address is considered invalid, and this
-    ///   function throws for queries about the zero address.
-    /// @param
-    ///   - _owner: An address for whom to query the balance
-    /// @return amount of current escrow account balance. First is buyer token , and seconds is seller token
-
-
-
-    /// @notice simple query to return a simple description of compliance.
-    /// @dev must be implemented in Escrow-Contract and optional for other contracts.
-    function escrowComplianceDescription() external view returns (string);
-
-    /// simple query to return a string based on error code. if the code is zero, the return can be 'success'
-    /// @dev must be implemented in Escrow-Contract and optional for other contracts.
-    function escrowErrorCodeDescription(uint32 _code) external view returns (string);
 
 
     /// @notice deposit fund(token) into escrow account.
@@ -199,45 +154,6 @@ The reason we chose to implement those functions in token contract rather than a
 - Token is more standardized and has better UI support
 - Token is equal to service, make token economy more prosperous
 
-
-----
-
-
-The buyer-contract and seller-contract should not have constraint rules.
-
-Let's discuss the following functions.
-
-1. **constructor**
-
-An escrow contract will define success/failure conditions. It means constraint rules might not be changed forever (might be changed after being created for the market exchange rate.), so it guarantees escrow policy.
-
-2. **escrowFund**
-
-This function should run differently for buyers and sellers.
-
-2.1 [Seller]
-- The seller calls this function to be escrow-ready. The seller's token ownership(balance) will be transferred to the escrow contract and the escrow balance should be `(Seller: amount, Buyer: 0)`.
-- The seller can call this function multiple times depending on implementation, but preferred just one time.
-
-2.2 [Buyer]
-- During the escrow process, the buyer should be able to call this function to deposit funds into the escrow account.
-- The escrow balance should be  `(Seller: amount X exchange rate, Buyer: amount)`. The Buyer: the amount will be used for the refund process.
-- In a successful scenario, the seller's escrow balance should be `(Seller: -= amount X exchange rate, Buyer: += amount)`.
-
-3. **escrowRefund**
-
-This function should be invoked by buyers only.
-The buyer can call this function in the running state only. In the state of failure or success, could not be a success.
-The escrow balances of seller and buyer will be updated reverse way of `escrowFund`
-
-
-4. **escrowWithdraw**
-
-Buyers and sellers can withdraw tokens from the escrow account to their account.
-The following processes are recommended.
-- Buyer can withdraw in escrow-success state only. Ownership of seller tokens can be transferred to the buyer from escrow-contract. In an escrow-failed state, the buyer should call the `escrowRefund` function.
-- When the seller calls this function in the escrow-success state, the remaining seller token will be transferred to the seller, and the earned buyer's token will be also transferred from the escrow-account.
-- In the case of escrow-failed, the seller only gets a refund seller token.
 
 ## Backwards Compatibility
 
