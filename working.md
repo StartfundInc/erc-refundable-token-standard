@@ -28,7 +28,6 @@ To solve this problem, the Escrow service exists in the real world. However, it 
 
 Escrow smart contract service should support refund `ERC20` tokens in the middle of the escrow process or when the operation fails.
 
-
 ## Specification
 
 There are two types of contract for the escrow process:
@@ -65,7 +64,6 @@ In the case of `Payable Contract`,
 function escrowFund(address _to, uint256 _value) public returns (bool)
 ```
 
-
 #### escrowRefund
 Refunds `_value` amount of tokens from address `_from`.
 In the case of `Escrow Contract`,
@@ -79,7 +77,6 @@ In the case of `Payable Contract`,
 ```
 function escrowRefund(address _from, uint256 _value) public returns (bool)
 ```
-
 
 #### escrowWithdraw
 Withdraws funds from the escrow account.
