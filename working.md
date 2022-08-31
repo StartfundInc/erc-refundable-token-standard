@@ -38,8 +38,6 @@ This standard proposes interfaces on top of the [EIP-20](./eip-20.md) standard.
 
 ### Methods
 
-**NOTES**:
-  - The following specifications use syntax from Solidity `0.4.17` (or above)
 #### constructor
 The `Escrow Contract` may define the following policies:
 - MUST include seller token contract address
@@ -52,11 +50,13 @@ The `Escrow Contract` may define the following policies:
 
 #### escrowFund
 Funds `_value` amount of tokens to address `_to`.
-In the case of `Escrow Contract`,
+
+In the case of `Escrow Contract`:
  - `_to` MUST be the user address.
  - `msg.sender` MUST be the payable contract address.
  - MUST check policy validations.
-In the case of `Payable Contract`,
+
+In the case of `Payable Contract`:
   - The address `_to` MUST be the escrow contract address.
   - MUST call ERC20's `_transfer` likely function.
   - Before calling `_transfer` function, MUST call the same function of the escrow contract interface. The parameter `_to` MUST be `msg.sender` to recognize the user address in the escrow contract.
@@ -66,11 +66,13 @@ function escrowFund(address _to, uint256 _value) public returns (bool)
 
 #### escrowRefund
 Refunds `_value` amount of tokens from address `_from`.
-In the case of `Escrow Contract`,
+
+In the case of `Escrow Contract`:
  - `_from` MUST be the user address.
  - `msg.sender` MUST be the payable contract address.
  - MUST check policy validations.
-In the case of `Payable Contract`,
+
+In the case of `Payable Contract`:
   - The address `_from` MUST be the escrow contract address.
   - MUST call ERC20's `_transfer` likely function.
   - Before calling `_transfer` function, MUST call the same function of the escrow contract interface. The parameter `_from` MUST be `msg.sender` to recognize the user address in the escrow contract.
@@ -80,9 +82,10 @@ function escrowRefund(address _from, uint256 _value) public returns (bool)
 
 #### escrowWithdraw
 Withdraws funds from the escrow account.
-In the case of `Escrow Contract`,
+In the case of `Escrow Contract`:
  - MUST check the escrow process is completed.
  - MUST send the remaining balance of seller and buyer tokens to `msg.sender`'s seller and buyer contract wallets.
+
 In the case of `Payable Contract`, it is optional.
 ```
 function escrowWithdraw() public returns (bool)
