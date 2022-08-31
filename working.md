@@ -24,7 +24,7 @@ This standard is an extension of [EIP-20](./eip-20.md). This specification provi
 ## Motivation
 
 Due to the nature of cryptocurrencies that guarantee anonymity, there is no way to get it back to the cryptocurrency that has already been paid.
-To solve this problem, the Escrow service exists in the real world. However, it is challenging to implement an escrow service coordinated by a third-party arbitrator in a decentralized cryptocurrency ecosystem.  To solve this, we designed a smart contract that acts as an escrow and devised a function where each token is sent back to the original wallet if the escrow is not completed.
+To solve this problem, the Escrow service exists in the real world. However, it is challenging to implement an escrow service coordinated by a third-party arbitrator in a decentralized cryptocurrency ecosystem. To solve this, we designed a smart contract that acts as an escrow and devised a function where each token is sent back to the original wallet if the escrow is not completed.
 
 Escrow smart contract service should support refund `ERC20` tokens in the middle of the escrow process or when the operation fails.
 
@@ -82,6 +82,7 @@ function escrowRefund(address _from, uint256 _value) public returns (bool)
 
 #### escrowWithdraw
 Withdraws funds from the escrow account.
+
 In the case of `Escrow Contract`:
  - MUST check the escrow process is completed.
  - MUST send the remaining balance of seller and buyer tokens to `msg.sender`'s seller and buyer contract wallets.
@@ -118,7 +119,7 @@ The suggested 3 functions (`escrowFund`, `escrowRefund` and `escrowWithdraw`) ar
 
 `escrowRefund` can be invoked in the middle of the escrow process or when the escrow process is failed.
 
-`escrowWithdraw` allows users (sellers and buyers) to transfer tokens from the escrow account. When the escrow process is completed, the seller can get the buyer's token and the buyers can get the seller's token.
+`escrowWithdraw` allows users (sellers and buyers) to transfer tokens from the escrow account. When the escrow process is completed, the seller can get the buyer's token, and the buyers can get the seller's token.
 
 ## Backwards Compatibility
 
@@ -130,7 +131,7 @@ This EIP is fully backward compatible with the [EIP-20](./eip-20.md) specificati
 2. [Escrow contract example](../assets/eip-5528/EscrowContractAccount.sol).
 3. [Unit test example with truffle](../assets/eip-5528/truffule-test.js).
 
-The above three test cases files demonstrate the following conditions for exchanging seller/buyer tokens.
+The above three test case files demonstrate the following conditions for exchanging seller/buyer tokens.
 - The exchange rate is one-to-one.
 - If the number of buyers reaches 2, the escrow process will be terminated(success).
 - Otherwise(not meeting success condition yet), buyers can refund(or withdraw) their funded tokens.
