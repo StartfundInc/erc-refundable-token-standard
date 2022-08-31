@@ -1,7 +1,7 @@
 ---
 eip: 5528
 title: Refundable Fungible Tokens
-description: Allows refunds for EIP-20 tokens from escrow smart contract
+description: Allows refunds for EIP-20 tokens by escrow smart contract
 author: StartfundInc (@StartfundInc)
 discussions-to: https://ethereum-magicians.org/t/eip-5528-refundable-token-standard/10494
 status: Draft
