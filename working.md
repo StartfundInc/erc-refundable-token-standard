@@ -15,7 +15,7 @@ requires: 20
 
 This standard is an extension of [EIP-20](./eip-20.md). This specification provides a type of escrow service in the blockchain ecosystem, which includes the following capabilities.
 - The seller issues tokens.
-- The seller creates an escrow smart contract with detailed escrow information. The information could include seller token contract address, buyer token contract address,  lock period, exchange rate, the maximum number of buyers, minimum balance of buyers, etc.
+- The seller creates an escrow smart contract with detailed escrow information. The information could include seller token contract address, buyer token contract address,  lock period, exchange rate, the maximum number of buyers, minimum balance of buyers, additional escrow success conditions, etc.
 - The seller funds seller tokens to the escrow contract.
 - Buyers fund buyer tokens which are pre-defined in the escrow contract.
 - When the escrow status meets success, the seller can withdraw buyer tokens, and buyers can withdraw seller tokens based on exchange rates.
