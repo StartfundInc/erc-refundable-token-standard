@@ -136,7 +136,8 @@ This test case demonstrates the following conditions for exchanging seller/buyer
 
 ## Security Considerations
 
-Since the external contract(Escrow Contract) will control seller or buyer rights, flaws within the escrow contract directly lead to the standard’s unexpected behavior.
+Since the escrow contract will control seller and buyer rights, flaws within the escrow contract will directly lead to unexpected behavior and potential loss of funds.
+
 
 ## Copyright
 
