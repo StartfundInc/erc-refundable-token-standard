@@ -127,11 +127,9 @@ This EIP is fully backward compatible with the [EIP-20](./eip-20.md) specificati
 
 ## Test Cases
 
-1. [Seller/Buyer Token example](../assets/eip-5528/ERC20Mockup.sol).
-2. [Escrow contract example](../assets/eip-5528/EscrowContractAccount.sol).
-3. [Unit test example with truffle](../assets/eip-5528/truffule-test.js).
+[Unit test example by truffle](../assets/eip-5528/truffule-test.js).
 
-The above three test case files demonstrate the following conditions for exchanging seller/buyer tokens.
+This test case demonstrates the following conditions for exchanging seller/buyer tokens.
 - The exchange rate is one-to-one.
 - If the number of buyers reaches 2, the escrow process will be terminated(success).
 - Otherwise(not meeting success condition yet), buyers can refund(or withdraw) their funded tokens.
