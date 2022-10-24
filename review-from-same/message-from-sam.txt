@@ -1,0 +1,18 @@
+I've put up StartfundInc#1 with some editorial changes.
+
+Besides those changes, I think this EIP needs some more work before moving to the final state:
+
+1. The difference between the Payable Contract and the Escrow Contract are not clearly explained enough.
+  For example, it seems like they both implement IERC5528 but behave differently.
+
+2. There is some ambiguity about whether Escrow Contracts can implement policies beyond the list enumerated in this proposal.
+  I'd add a line explicitly either allowing or prohibiting extra policies.
+
+3. The instructions for implementing the Payable Contract's functions are a bit confusing.
+  Adding an example Solidity function call to demonstrate
+  what you mean by calling the same function in the Escrow Contract with certain parameters would certainly help clear things up.
+
+4. I think I missed replacing _transfer with transfer in a few places 😅
+
+5. The Rationale section still has some grammar problems.
+6. The section header describing policies is called #### constructor. I'm not sure if you mean to imply that these policies have to be set in the constructor, or if that was a mistake.
